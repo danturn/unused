@@ -1,0 +1,4 @@
+%{
+  "dep_from_git": {:git, "https://github.com/darkofabijan/elixir-grep", "1873e469ff228d095b9621644afc91a67b915fca", []},
+  "elixir_grep": {:git, "https://github.com/darkofabijan/elixir-grep", "1873e469ff228d095b9621644afc91a67b915fca", []},
+}
