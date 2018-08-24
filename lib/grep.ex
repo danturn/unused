@@ -32,7 +32,18 @@ defmodule Unused.Grep do
   def format_results(results) do
     results
     |> List.flatten
-    |> Enum.group_by(fn {pattern, _, _} -> pattern end, fn {_, file, result} -> {file, result} end)
+    |> group_by_tag()
+    |> group_by_pattern()
+  end
+
+  defp group_by_tag(results) do
+    Enum.group_by(results, fn {tag, _, _, _} -> tag end, fn {_, pattern, file, result} -> {pattern, file, result} end)
+  end
+
+  defp group_by_pattern(results) do
+    Map.new(results, fn {tag, matches} -> 
+      {tag, Enum.group_by(matches, fn {pattern, _, _} -> pattern end, fn {_, file, result} -> {file, result} end)}
+    end)
   end
 
   defp collate_result({:ok, result}, acc), do: [result | acc]
@@ -42,11 +53,9 @@ defmodule Unused.Grep do
     File.open(path, [:read], fn(file) ->
       lines = IO.read(file, :all)
 
-      Enum.map(patterns, fn pattern -> 
-        case Regex.run(~r|\b#{pattern}\b|, lines) do
-          nil -> {pattern, path, :not_found}
-          matches -> {pattern, path, matches}
-        end
+      Enum.map(patterns, fn {tag, description, pattern} -> 
+        matches = Regex.scan(pattern, lines)
+        {tag, description, path, List.flatten(matches)}
       end)
     end)
   end
