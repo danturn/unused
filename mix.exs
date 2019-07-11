@@ -7,7 +7,8 @@ defmodule Unused.MixProject do
       version: "0.1.0",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      escript: [main_module: Unused],
     ]
   end
 
@@ -19,7 +20,6 @@ defmodule Unused.MixProject do
   end
 
   defp deps do
-    [
-    ]
+    []
   end
 end
